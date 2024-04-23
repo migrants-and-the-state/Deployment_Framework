@@ -5,6 +5,7 @@ from PIL import Image
 from torchvision.transforms import Compose, Resize, ToTensor, Normalize
 import platform
 import torch.nn as nn
+import numpy as np
 
 class Pretrain_Image_Classifier(nn.Module):
     ''' 
@@ -61,7 +62,7 @@ class Pretrain_Image_Classifier(nn.Module):
         '''
         features = self.backbone(x)
         output = self.linear_head(features)
-        return output
+        return output, features
 
     def download_preprocess_image(self, url):
         ''' 
