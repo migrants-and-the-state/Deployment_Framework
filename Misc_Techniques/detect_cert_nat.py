@@ -51,6 +51,7 @@ def load_template_embeddings(pkl_path="./Misc_techniques/cert_nat_img_text.pkl")
 def compute_cosine_similarity_scores_from_pkls(text_list, template_vector, vectors=None, model=None, mode='text_model'):
     ''' 
     Computes Cosine Similarity 
+    TODO: Add more info to aid debugging
     '''
     
     if model is not None:
@@ -63,6 +64,7 @@ def compute_cosine_similarity_scores_from_pkls(text_list, template_vector, vecto
             # assume text_list contains urls
             output, features = model.inference(text_list[0])
             embeddings_array = np.array(features)
+        
         specific_doc_vector_array = np.array(template_vector).reshape(1, -1)
         similarity_scores = cosine_similarity(specific_doc_vector_array, embeddings_array)
 
