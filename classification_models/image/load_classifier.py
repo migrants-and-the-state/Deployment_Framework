@@ -6,26 +6,34 @@ from torchvision.transforms import Compose, Resize, ToTensor, Normalize
 import platform
 import torch.nn as nn
 import numpy as np
+import sys
+sys.path.append('./Model_Trainer/') # TODO: Fix Path issue later. Currently added model_trainer as submodule
 
-class Pretrain_Image_Classifier(nn.Module):
+class Pretrained_Image_Classifier(nn.Module):
     ''' 
     Image Classifier Class with a pretrained backbone
     In this case DinoV2 from image retrieval experiments as the backbone.
     A head is attached to this backbone and this is used for inferences on images
     '''
 
-    def __init__(self, model_path):
+    def __init__(self, model_path, pretrained=True):
         ''' 
         Sets up Device (cuda/mps/cpu)
         Loads up backbone and linear head
         '''
 
-        super(Pretrain_Image_Classifier, self).__init__()
+        super(Pretrained_Image_Classifier, self).__init__()
         self.device = self.setup_device()
-        self.backbone = torch.hub.load('facebookresearch/dinov2', 'dinov2_vitg14_reg').to(self.device)
-        self.backbone.eval()
-        self.linear_head = torch.load(model_path, map_location=self.device)
-        self.linear_head.eval()
+        self.pretrain = pretrained
+        if self.pretrain:
+            print("Loading a pretrained model + linear head")
+            self.linear_head = torch.load(model_path, map_location=self.device)
+            self.linear_head.eval()
+            # hardcode device for now as attention not supported in mps
+            self.backbone = torch.hub.load('facebookresearch/dinov2', 'dinov2_vitg14_reg').to('cpu') 
+            self.backbone.eval()
+        else:
+            self.model = torch.load(model_path, map_location=self.device)
         self.transform = Compose([
             Resize((224, 224)),
             ToTensor(),
@@ -60,9 +68,13 @@ class Pretrain_Image_Classifier(nn.Module):
         ''' 
         Forward pass through the model
         '''
-        features = self.backbone(x)
-        output = self.linear_head(features)
-        return output, features
+        if self.pretrain:
+            features = self.backbone(x)
+            output = self.linear_head(features.to(self.device))
+            return output.cpu(), features.cpu()
+        else:
+            output = self.model(x)
+            return output, None
 
     def download_preprocess_image(self, url):
         ''' 
@@ -90,30 +102,10 @@ class Pretrain_Image_Classifier(nn.Module):
         if image is not None:
             image_tensor = self.transform(image).unsqueeze(0)
             with torch.no_grad():
-                output = self(image_tensor.to(self.device))
-            return output
+                output, features = self(image_tensor.to('cpu'))
+            return output, features
         else:
             print("Image download/preprocessing failed.")
-            return np.array([])
+            return np.array([]), np.array([])
 
 
-# Example usage
-model_path = 'linear_model.pth'  # Path to your linear head model
-image_classifier = Pretrain_Image_Classifier(model_path)
-
-# Download and preprocess an image
-url = 'https://example.com/your-image.jpg'
-image = image_classifier.download_preprocess_image(url)
-
-# Convert image to tensor and add batch dimension
-if image is not None:
-    image_tensor = image_classifier.transform(image).unsqueeze(0)
-
-    # Perform inference
-    with torch.no_grad():
-        output = image_classifier(image_tensor.to(image_classifier.device))
-
-        # Print output
-        print("Output:", output)
-else:
-    print("Image download/preprocessing failed.")

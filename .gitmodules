@@ -1,0 +1,4 @@
+[submodule "Model_Trainer"]
+	path = Model_Trainer
+	url = https://github.com/Migrants-and-The-State/Model_Trainer.git
+	branch = features/embeddings_trainer

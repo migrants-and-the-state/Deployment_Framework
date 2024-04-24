@@ -9,6 +9,7 @@
     COUNTRY:
       - Spain
       - Cuba
+      - USA
     STATE_CITY:
       - Asturias
       - Las Villas 
@@ -21,3 +22,5 @@
       - K1 BREES Manufactury
     NATIONALITY:
       - Cuban
+    EMPLOYER_ADDRESS:
+      - 507 W. 17 St.
