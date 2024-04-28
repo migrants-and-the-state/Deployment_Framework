@@ -30,7 +30,7 @@ class Pretrained_Image_Classifier(nn.Module):
             self.linear_head = torch.load(model_path, map_location=self.device)
             self.linear_head.eval()
             # hardcode device for now as attention not supported in mps
-            self.backbone = torch.hub.load('facebookresearch/dinov2', 'dinov2_vitg14_reg').to('cpu') 
+            self.backbone = torch.hub.load('facebookresearch/dinov2', 'dinov2_vitg14_reg').to(self.device) 
             self.backbone.eval()
         else:
             self.model = torch.load(model_path, map_location=self.device)
