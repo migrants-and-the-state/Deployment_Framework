@@ -9,12 +9,12 @@ from misc_techniques import flair_extract
 import pandas as pd 
 import os
 
-df = pd.read_csv("df_combined.csv")
+df = pd.read_csv("/scratch/ag8172/combined_csv.csv")
 # os.mkdir('/Users/ajay/Documents/Oncampus/TrainingFramework/metadata_outputs/') # make directory in scratch
 
 cert_nat_image, cert_nat_text = detect_cert_nat.load_template_embeddings()
-image_embeddings = detect_cert_nat.init_image_embeddings("/scratch/ag8172/data/parallel_results.pkl")
-text_embeddings = detect_cert_nat.init_text_embeddings("/scratch/ag8172/data/text_embeddings_textract.pkl")
+image_embeddings = detect_cert_nat.init_image_embeddings("/scratch/ag8172/parallel_results.pkl")
+text_embeddings = detect_cert_nat.init_text_embeddings("/scratch/ag8172/text_embeddings_textract.pkl")
 
 model_class = Pretrained_Image_Classifier("linear_layer.pth")
 ext_class = Extraction("./metadata_extraction/configs/fewshot_v2.cfg", "./metadata_extraction/configs/examples_g325a_2.yml")
@@ -55,8 +55,8 @@ for i in tqdm(df.index.tolist()):
                 if document_wise_result['document_type'] not in ['photograph','misc']:
                         # get text
                         # text was concatenated strings obtained from aws textract
+                        text = df.iloc[i]['Detected Text']
                         if not isinstance(text,float):
-                                text = df.iloc[i]['Detected Text']
                                 
                                 image_cosine_sim = detect_cert_nat.compute_cosine_similarity_scores_from_pkls([i], cert_nat_image, image_embeddings, mode='pkl')
                                 text_cosine_sim = detect_cert_nat.compute_cosine_similarity_scores_from_pkls([i], cert_nat_text, text_embeddings, mode='pkl')
