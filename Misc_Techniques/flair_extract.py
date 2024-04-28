@@ -65,7 +65,7 @@ def extract_country_years(text):
             found_years = re.findall(pattern_yyyy, entity.text)
             years_per_page.update(found_years)
 
-    print("printing dates",files_dates)
+    # print("printing dates",files_dates)
     files_dates = remove_non_dates(files_dates)
     return dict(dates = files_dates, 
                 cardinals  =files_cardinals, 
