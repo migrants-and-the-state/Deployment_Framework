@@ -1,0 +1,40 @@
+- text: "THE TO BE FORWARDED TO No. 8806431 IMMIGRATION AND INATURALIZATION SERVICE Petition No. 65010 DUPLICATE Personal description, of holderas, of date of naturalization: Date of birth January 25, 1909 sex female ; complexion medium coloroleyes brown color of hair grey height 5 feet 4 inches; weight 117 pounds; visibledistincine marks none Maritalstatus widowed Country of formernationality Hungary I certify that the description, above given is true, and that,She ephotographs affixed, hereto, is a likeness of me. Room Toth ( Complete and true signature of holder) UNITED STATES OF AMERICA } SS: WESTERN DISTRICT OF NEW YORK Beit known, that at a termolthe District Court,of The United States, Western District of New York held pursuantlo lawal Buffalo, N. Y. on May 6th, 1965 the Court havingfoundshal ROSA TOTA then residing at 2148 Main Street, Buffalo, New York - 14214 inlends loreside permanently in the United. States when sorequired by the Rosa Toth Naturalization Laws ofthe United States), had in all other respects, complied with the applicable provisions of such nativalization laws, and was entitled to be Seal admitted docilizenship, thereupon ordered that such person be and us)hewas admilled as a citizen of the United States of America. Indestimony whereof thesealos, the court is hereunto, affixced this 6th day of May in the year four Lord nineteen hundred and sixty-five ROLAND E. LOGEL Clerk of the U.S. District Court. IT IS A VIOLATION OF THE U. S. CODE (AND PUNISHABLE AS SUCH) TO COPY. PRINT. PHOTOGRAPH. OR OTHERWISE ILLEGALLY USE THIS CERTIFICATE. By arice morning Deputy Clerk."
+  entities:
+    NUMBER:
+      - 8806431
+    PETITION_NUMBER:
+      - Petition No 65010
+    DATE_OF_BIRTH:
+      - January 25, 1909
+    SEX:
+      - female
+    HEIGHT:
+      - 5 feet 4 inches
+    WEIGHT:
+      - 117 pounds
+    COLOR_OF_EYES:
+      - brown
+    COMPLEXION:
+      - medium
+    COLOR_OF_HAIR:
+      - grey
+    VISIBILE_DISTINCTIVE_MARKS:
+      - none
+    MARITAL_STATUS:
+      - widowed
+    FORMER_NATIONALITY:
+      - Hungary
+    Naturalization_District:
+      - Western District of New York
+    NATURALIZATION_MUNICIPALITY:
+      - Buffalo
+    NATURALIZATION_STATE:
+      - New York
+    NATURALIZATION_COUNTRY:
+      - United States
+    DATE_OF_NATURALIZATION:
+      - May 6th, 1965
+    RESIDENCE_AT_NATURALIZATION:
+      - 2148 Main Street, Buffalo, New York - 14214
+    NAME_AT_NATURALIZATION:
+      - Rosa TOTA
