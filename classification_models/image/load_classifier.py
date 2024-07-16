@@ -16,20 +16,19 @@ class Pretrained_Image_Classifier(nn.Module):
     A head is attached to this backbone and this is used for inferences on images
     '''
 
-    def __init__(self, model_path, pretrained=True):
+    def __init__(self, model_path, device=None, pretrained=True):
         ''' 
         Sets up Device (cuda/mps/cpu)
         Loads up backbone and linear head
         '''
 
         super(Pretrained_Image_Classifier, self).__init__()
-        self.device = self.setup_device()
+        self.device = self.setup_device() if device is None else device
         self.pretrain = pretrained
         if self.pretrain:
             print("Loading a pretrained model + linear head")
             self.linear_head = torch.load(model_path, map_location=self.device)
             self.linear_head.eval()
-            print("haa")
             # hardcode device for now as attention not supported in mps
             self.backbone = torch.hub.load('facebookresearch/dinov2', 'dinov2_vitg14_reg').to(self.device) 
             self.backbone.eval()
