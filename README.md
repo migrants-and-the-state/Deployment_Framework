@@ -13,7 +13,7 @@
 
 ## Embeddings
 
-Find the embeddings here: https://drive.google.com/drive/folders/1_HnOundYXPTFj4Ao8Q2mhFAM8SI4O9MG?usp=sharing
+Find the embeddings for testing [here](https://drive.google.com/drive/folders/1_HnOundYXPTFj4Ao8Q2mhFAM8SI4O9MG?usp=sharing)
 
 ## How to Create Environment
 
