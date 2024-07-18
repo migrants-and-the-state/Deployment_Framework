@@ -20,7 +20,7 @@ Find the embeddings for testing [here](https://drive.google.com/drive/folders/1_
 We use Miniconda for managing the environment.
 
 1. Create the environment:
-   conda env create -f env_variables.yaml -n <env_name>
+   ```conda env create -f env_variables.yaml -n <env_name>```
 
 2. Activate the environment:
-   conda activate <env_name>
+   ```conda activate <env_name>```
