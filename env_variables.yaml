@@ -132,8 +132,13 @@ dependencies:
       - jupyterlab-server==2.25.3
       - jupyterlab-widgets==3.0.10
       - kiwisolver==1.4.5
+      - langchain==0.1.16
+      - langchain-community==0.0.33
+      - langchain-core==0.1.44
+      - langchain-text-splitters==0.0.1
       - langcodes==3.3.0
       - langdetect==1.0.9
+      - langsmith==0.1.48
       - levenshtein==0.25.0
       - lxml==4.9.4
       - markupsafe==2.1.5
@@ -192,8 +197,9 @@ dependencies:
       - soupsieve==2.5
       - spacy==3.7.4
       - spacy-legacy==3.0.12
-      - spacy-llm==0.7.2
+      - spacy-llm==0.7.1
       - spacy-loggers==1.0.5
+      - spacy-alignments==0.9.1
       - sqlitedict==2.1.0
       - srsly==2.4.8
       - sympy==1.12
