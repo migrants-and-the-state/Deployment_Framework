@@ -8,3 +8,4 @@ metadata_extraction/__pycache__/run_llm_pipeline.cpython-38.pyc
 misc_techniques/__pycache__/detect_cert_nat.cpython-38.pyc
 misc_techniques/__pycache__/detect_G325A.cpython-38.pyc
 misc_techniques/__pycache__/flair_extract.cpython-38.pyc
+.DS_Store
