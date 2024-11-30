@@ -182,7 +182,7 @@ class OCR_Utils:
                 
             # Get image URL from full_jpg column
             image_url = row['full_jpg']
-            file_id = str(index)
+            file_id = row['afile_id']
             
             try:
                 # Run OCR and get file paths
