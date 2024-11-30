@@ -109,7 +109,7 @@ class Pretrained_Image_Classifier(nn.Module):
             print("Image download/preprocessing failed.")
             return np.array([]), np.array([])
 
-    def get_class(self, idx):
-        return self.model_inf_map[idx]
+    def get_class(self, output):
+        return self.model_inf_map[int(torch.argmax(output))]
 
 
