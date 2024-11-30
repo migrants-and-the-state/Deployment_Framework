@@ -7,6 +7,7 @@ import platform
 import torch.nn as nn
 import numpy as np
 import sys
+from tqdm import tqdm
 sys.path.append('./Model_Trainer/') # TODO: Fix Path issue later. Currently added model_trainer as submodule
 
 class Pretrained_Image_Classifier(nn.Module):
@@ -16,13 +17,15 @@ class Pretrained_Image_Classifier(nn.Module):
     A head is attached to this backbone and this is used for inferences on images
     '''
 
-    def __init__(self, model_path, model_inf_map, device=None, pretrained=True):
+    def __init__(self, model_path, model_inf_map, csv_path, device=None, pretrained=True):
         ''' 
         Sets up Device (cuda/mps/cpu)
         Loads up backbone and linear head
         '''
 
         super(Pretrained_Image_Classifier, self).__init__()
+        self.csv_path = csv_path
+        self.output_csv = pd.read_csv(self.csv_path)
         self.model_inf_map = model_inf_map
         self.device = self.setup_device() if device is None else device
         self.pretrain = pretrained
@@ -111,5 +114,41 @@ class Pretrained_Image_Classifier(nn.Module):
 
     def get_class(self, output):
         return self.model_inf_map[int(torch.argmax(output))]
+
+    def run_inference_on_csv(self, batch_size=20):
+        changes_count = 0
+        if 'ms_doctype_v1' not in self.output_csv.columns:
+            self.output_csv['ms_doctype_v1'] = None 
+
+        for index, row in tqdm(self.output_csv.iterrows()):
+            if row['ms_doctype_v1']:
+                continue
+            
+            image_url = row['full_jpg']
+            
+            
+            
+            try:
+                output, features = self.inference(image_url)
+                
+                if output:
+
+                    self.output_csv.at[index, 'ms_doctype_v1'] = self.get_class(output)
+                    changes_count += 1
+
+                    if changes_count % batch_size == 0:
+                        self.output_csv.to_csv(self.csv_path, index=False)
+                        print(f"Saved batch of {batch_size} changes")
+                else:
+                    print(f"Failed to process row {index}")
+
+            except Exception as e:
+                print(f"Error processing row {index}: {str(e)}")
+                continue
+
+        if changes_count > 0:
+            self.output_csv.to_csv(self.csv_path, index=False)
+            print(f"Image Model Inference completed. Total changes: {changes_count}")
+
 
 
