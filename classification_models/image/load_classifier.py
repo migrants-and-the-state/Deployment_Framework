@@ -102,7 +102,7 @@ class Pretrained_Image_Classifier(nn.Module):
         if image is not None:
             image_tensor = self.transform(image).unsqueeze(0)
             with torch.no_grad():
-                output, features = self(image_tensor.to('cpu'))
+                output, features = self(image_tensor.to(self.device))
             return output, features
         else:
             print("Image download/preprocessing failed.")
