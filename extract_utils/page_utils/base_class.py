@@ -20,18 +20,19 @@ class FileUtils:
 
         # Prepare the extracted data
         data = []
-        for url in self.csv_file[self.url_column]:
+        for url in tqdm(self.csv_file[self.url_column],desc="extracting from urls"):
             try:
                 # Extract required parts from the URL
-                parts = url.split("/")[-1].split("_")
-                afile_id = parts[0]
-                page_index = parts[1].split(".")[0]
-                file_id = afile_id.split("-")[-1]
+                parts = url.split("/")
+                id = parts[5].split("-")[-1].split("_")[1]
+                afile_id = "_".join(parts[5].split("-")[-1].split("_")[1:])
+                page_index = parts[5].split("-")[-1].split("_")[-1]
                 full_jpg = url
+                print(id,afile_id,page_index,full_jpg)
 
                 # Append data to the list
                 data.append({
-                    "id": file_id,
+                    "id": id,
                     "afile_id": afile_id,
                     "page_index": page_index,
                     "full_jpg": full_jpg
