@@ -175,7 +175,7 @@ class OCR_Utils:
         changes_count = 0
         
         # Iterate through rows where OCR hasn't been done yet
-        for index, row in self.output_csv.iterrows():
+        for index, row in tqdm(self.output_csv.iterrows()):
             # Skip if both OCR columns are already filled
             if pd.notna(row['text_ocr']) and pd.notna(row['raw_ocr']):
                 continue
