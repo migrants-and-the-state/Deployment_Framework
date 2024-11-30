@@ -16,13 +16,14 @@ class Pretrained_Image_Classifier(nn.Module):
     A head is attached to this backbone and this is used for inferences on images
     '''
 
-    def __init__(self, model_path, device=None, pretrained=True):
+    def __init__(self, model_path, model_inf_map, device=None, pretrained=True):
         ''' 
         Sets up Device (cuda/mps/cpu)
         Loads up backbone and linear head
         '''
 
         super(Pretrained_Image_Classifier, self).__init__()
+        self.model_inf_map = model_inf_map
         self.device = self.setup_device() if device is None else device
         self.pretrain = pretrained
         if self.pretrain:
