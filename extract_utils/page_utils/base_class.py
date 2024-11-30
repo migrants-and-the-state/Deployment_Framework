@@ -56,6 +56,10 @@ class OCR_Utils:
     def __init__(self, raw_ocr_path, formatted_ocr_path, csv_path):
         self.raw_ocr_path = raw_ocr_path # anything straight from textract
         self.formatted_ocr_path = formatted_ocr_path # ocr post formatting
+        if not os.path.exists(self.raw_ocr_path):
+            os.mkdir(self.raw_ocr_path)
+        if not os.path.exists(self.formatted_ocr_path):
+            os.mkdir(self.formatted_ocr_path)
         self.output_csv = pd.read_csv(csv_path)
         self.textract = boto3.client('textract', region_name='us-east-1')
         self.s3 = boto3.client('s3')
