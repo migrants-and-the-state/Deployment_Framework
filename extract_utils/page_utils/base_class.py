@@ -199,7 +199,7 @@ class OCR_Utils:
                         self.output_csv.to_csv(self.csv_path, index=False)
                         print(f"Saved batch of {batch_size} changes")
                         
-                    print(f"Processed row {index}")
+                    # print(f"Processed row {index}")
                 else:
                     print(f"Failed to process row {index}")
                     
