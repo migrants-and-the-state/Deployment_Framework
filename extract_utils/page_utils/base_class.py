@@ -168,17 +168,19 @@ class OCR_Utils:
 
     def call_ocr_on_csv(self, batch_size=20):
         # Check if OCR columns exist, if not create them
-        if 'text_ocr' not in self.output_csv.columns:
-            self.output_csv['text_ocr'] = None
-        if 'raw_ocr' not in self.output_csv.columns:
-            self.output_csv['raw_ocr'] = None
+        # if 'text_ocr' not in self.output_csv.columns:
+        #     self.output_csv['text_ocr'] = None
+        # if 'raw_ocr' not in self.output_csv.columns:
+        #     self.output_csv['raw_ocr'] = None
+        if 'ocr_exists' not in self.output_csv.columns:
+            self.output_csv['ocr_exists'] = False
         
         changes_count = 0
         
         # Iterate through rows where OCR hasn't been done yet
         for index, row in tqdm(self.output_csv.iterrows()):
-            # Skip if both OCR columns are already filled
-            if pd.notna(row['text_ocr']) and pd.notna(row['raw_ocr']):
+            # Skip if OCR column already filled
+            if row['ocr_exists']:
                 continue
                 
             # Get image URL from full_jpg column
@@ -191,8 +193,9 @@ class OCR_Utils:
                 
                 if raw_text_path and formatted_text_path:
                     # Update DataFrame with file paths
-                    self.output_csv.at[index, 'raw_ocr'] = raw_text_path
-                    self.output_csv.at[index, 'text_ocr'] = formatted_text_path
+                    # self.output_csv.at[index, 'raw_ocr'] = f"{file_id}.json"
+                    # self.output_csv.at[index, 'text_ocr'] = f"{file_id}.txt"
+                    self.output_csv.at[index, 'ocr_exists'] = True
                     changes_count += 1
                     
                     # Save CSV after batch_size number of changes
