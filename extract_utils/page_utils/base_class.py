@@ -28,7 +28,6 @@ class FileUtils:
                 afile_id = "_".join(parts[5].split("-")[-1].split("_")[1:])
                 page_index = parts[5].split("-")[-1].split("_")[-1]
                 full_jpg = url
-                print(id,afile_id,page_index,full_jpg)
 
                 # Append data to the list
                 data.append({
