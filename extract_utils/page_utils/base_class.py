@@ -60,6 +60,7 @@ class OCR_Utils:
             os.mkdir(self.raw_ocr_path)
         if not os.path.exists(self.formatted_ocr_path):
             os.mkdir(self.formatted_ocr_path)
+        self.csv_path = csv_path
         self.output_csv = pd.read_csv(csv_path)
         self.textract = boto3.client('textract', region_name='us-east-1')
         self.s3 = boto3.client('s3')
@@ -165,7 +166,7 @@ class OCR_Utils:
             print(file_id, "Skipped over error",e)
             return None, None
 
-    def call_ocr_on_csv(self, batch_size=50):
+    def call_ocr_on_csv(self, batch_size=20):
         # Check if OCR columns exist, if not create them
         if 'text_ocr' not in self.output_csv.columns:
             self.output_csv['text_ocr'] = None
