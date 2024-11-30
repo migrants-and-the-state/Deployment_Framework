@@ -111,7 +111,7 @@ class Pretrained_Image_Classifier(nn.Module):
             return output, features
         else:
             print("Image download/preprocessing failed.")
-            return np.array([]), np.array([])
+            return None, None
 
     def get_class(self, output):
         return self.model_inf_map[int(torch.argmax(output))]
@@ -132,14 +132,14 @@ class Pretrained_Image_Classifier(nn.Module):
             try:
                 output, features = self.inference(image_url)
                 
-                if output.size > 0:
+                if output is not None:
 
                     self.output_csv.at[index, 'ms_doctype_v1'] = self.get_class(output)
                     changes_count += 1
 
                     if changes_count % batch_size == 0:
                         self.output_csv.to_csv(self.csv_path, index=False)
-                        print(f"Saved batch of {batch_size} changes")
+                        # print(f"Saved batch of {batch_size} changes")
                 else:
                     print(f"Failed to process row {index}")
 
