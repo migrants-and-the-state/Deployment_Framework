@@ -122,7 +122,7 @@ class Pretrained_Image_Classifier(nn.Module):
             self.output_csv['ms_doctype_v1'] = None 
 
         for index, row in tqdm(self.output_csv.iterrows()):
-            if row['ms_doctype_v1'] != None:
+            if pd.notna(row['ms_doctype_v1']):
                 continue
             
             image_url = row['full_jpg']
