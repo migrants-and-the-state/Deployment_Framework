@@ -132,7 +132,7 @@ class Pretrained_Image_Classifier(nn.Module):
             try:
                 output, features = self.inference(image_url)
                 
-                if output:
+                if output.size > 0:
 
                     self.output_csv.at[index, 'ms_doctype_v1'] = self.get_class(output)
                     changes_count += 1
