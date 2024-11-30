@@ -20,7 +20,7 @@ class FileUtils:
 
         # Prepare the extracted data
         data = []
-        for url in tqdm(self.csv_file[self.url_column]):
+        for url in self.csv_file[self.url_column]:
             try:
                 # Extract required parts from the URL
                 parts = url.split("/")[-1].split("_")
