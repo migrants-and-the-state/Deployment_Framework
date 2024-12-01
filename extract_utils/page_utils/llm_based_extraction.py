@@ -123,3 +123,10 @@ def process_gender(text):
         return text.lower()
     else:
         return "N/A"  # Default to N/A for anything not specifically matched
+
+
+def process_form_title(text):
+    # Extract texts within double quotes in the answer and join them with commas
+    extracted_texts = re.findall(r'"(.*?)"', text)
+    formatted_answer = ", ".join(extracted_texts)
+    return formatted_answer
