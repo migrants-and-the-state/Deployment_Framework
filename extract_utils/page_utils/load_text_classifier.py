@@ -22,6 +22,7 @@ class TextProcessing_Utils:
             if row[col_name] != init_val:
                 continue
             
+            # read the text file
             file_id = row['afile_id']
             if not os.path.exists(os.path.join(self.formatted_ocr_path,f"{file_id}.txt")): # skip if path doesn't exist
                 print(f"Skipping {file_id}")
@@ -51,7 +52,7 @@ class TextProcessing_Utils:
         if changes_count > 0:
             self.output_csv[col_name] = self.output_csv[col_name].astype(col_datatype)
             self.output_csv.to_csv(self.csv_path, index=False)
-            print(f"Image Model Inference completed. Total changes: {changes_count}")
+            print(f"Text Inference completed. Total changes: {changes_count}")
 
 
 
