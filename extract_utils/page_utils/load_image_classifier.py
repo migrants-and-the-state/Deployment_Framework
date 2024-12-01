@@ -1,3 +1,6 @@
+# Contains all code for image based extraction models and support utils
+
+
 import requests 
 from io import BytesIO
 import torch
@@ -124,7 +127,7 @@ class Pretrained_Image_Classifier(nn.Module):
         for index, row in tqdm(self.output_csv.iterrows()):
             if pd.notna(row['ms_doctype_v1']):
                 continue
-            
+
             image_url = row['full_jpg']
             
             
