@@ -60,7 +60,7 @@ class VLLM_Extractor:
             print(f"Error retrieving or processing image at {url}: {e}")
             return None
 
-    def run_inference_on_csv(self, prompt, text_postprocess_fn, col_name, batch_size=20):
+    def run_inference_on_csv(self, prompt, text_postprocess_fn, col_name,col_datatype='object', init_val=None, batch_size=20):
         ''' 
         very general script to run vllm inference for a given prompt and store the results into a csv on a particular column
 
@@ -69,10 +69,10 @@ class VLLM_Extractor:
 
         changes_count = 0
         if col_name not in self.output_csv.columns:
-            self.output_csv[col_name] = None 
+            self.output_csv[col_name] = init_val 
 
         for index, row in tqdm(self.output_csv.iterrows()):
-            if pd.notna(row[col_name]):
+            if row[col_name] != init_val:
                 continue
             
             image_url = row['full_jpg']
@@ -85,7 +85,7 @@ class VLLM_Extractor:
                     changes_count += 1
 
                     if changes_count % batch_size == 0:
-                        self.output_csv.to_csv(self.csv_path, index=False)
+                        self.output_csv.to_csv(self.csv_path, index=False).astype(col_datatype)
                         # print(f"Saved batch of {batch_size} changes")
                 else:
                     print(f"Failed to process row {index}")
@@ -95,7 +95,7 @@ class VLLM_Extractor:
                 continue
 
         if changes_count > 0:
-            self.output_csv.to_csv(self.csv_path, index=False)
+            self.output_csv.to_csv(self.csv_path, index=False).astype(col_datatype)
             print(f"Image Model Inference completed. Total changes: {changes_count}")
 
 
