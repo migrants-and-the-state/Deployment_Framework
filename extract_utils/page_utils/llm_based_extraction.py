@@ -72,7 +72,7 @@ class VLLM_Extractor:
             self.output_csv[col_name] = init_val 
 
         for index, row in tqdm(self.output_csv.iterrows()):
-            if row[col_name] != init_val:
+            if row[col_name] != init_val or row['ms_doctype_v1'] in ['photograph','misc']: # if row value already has something or if its a photograph or misc
                 continue
             
             image_url = row['full_jpg']
