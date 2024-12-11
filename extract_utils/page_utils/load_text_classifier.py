@@ -24,7 +24,7 @@ class TextProcessing_Utils:
             
             # read the text file
             file_id = row['afile_id']
-            if not os.path.exists(os.path.join(self.formatted_ocr_path,f"{file_id}.txt")): # skip if path doesn't exist
+            if not os.path.exists(os.path.join(self.formatted_ocr_path,f"{file_id}.txt")) or row['ms_doctype_v1'] in ['photograph','misc']: # skip if path doesn't exist
                 print(f"Skipping {file_id}")
                 continue 
             
