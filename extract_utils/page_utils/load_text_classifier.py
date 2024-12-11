@@ -73,7 +73,10 @@ def detect_g325av5(text, row):
                     return False
             else:
                 return False
-    return False
+        else:
+            return False
+    else:
+        return False
 
 # def detect_cert_nat():
 
