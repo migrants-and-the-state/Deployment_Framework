@@ -61,22 +61,19 @@ def detect_g325av5(text, row):
     Note: This code is written on a bunch of rules assuming the OCR is accurate AND that the ocr outputs are all concatenated
     Better algorithms can be used
     '''
-    if row['ms_doctype_v1'] in ['form','letter']:
-        if "G-325" in text:
-            if len(text) >= 1980 and len(text) < 3300:
-                if ("G-325A" in text[:400] or "G-325A" in text[-200:] \
-                    or "G-325 A" in text[:400] or "G-325 A" in text[-200:] \
-                    or "325" in text[-200:]) \
-                    and ("I-130" not in text[-200:] and "Form I" not in text[-200:] and "Form 1" not in text[-200:]):
-                    return True
-                else:
-                    return False
+    
+    if "G-325" in text:
+        if len(text) >= 1980 and len(text) < 3300:
+            if ("G-325A" in text[:400] or "G-325A" in text[-200:] \
+                or "G-325 A" in text[:400] or "G-325 A" in text[-200:] \
+                or "325" in text[-200:]) \
+                and ("I-130" not in text[-200:] and "Form I" not in text[-200:] and "Form 1" not in text[-200:]):
+                return True
             else:
                 return False
         else:
             return False
-    else:
-        return False
+    return False
 
 # def detect_cert_nat():
 
