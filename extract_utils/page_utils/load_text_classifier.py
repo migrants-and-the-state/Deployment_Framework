@@ -6,6 +6,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
 from sentence_transformers import SentenceTransformer
 import pickle 
+from load_image_classifier import Pretrained_Image_Classifier
 
 
 class TextProcessing_Utils:
@@ -30,7 +31,7 @@ class TextProcessing_Utils:
 
     def init_text_image_model(self, image_model_path, device = 'cuda', model_inf_map =  {0:'form',1:'letter',2:'photograph',3:'misc'}):
         self.text_model = SentenceTransformer('sentence-transformers/all-mpnet-base-v2').to(device)
-        self.image_model = Pretrained_Image_Classifier(model_path = model_path, 
+        self.image_model = Pretrained_Image_Classifier(model_path = image_model_path, 
                                           model_inf_map = model_inf_map,
                                           csv_path = self.csv_path,
                                           device=device)
