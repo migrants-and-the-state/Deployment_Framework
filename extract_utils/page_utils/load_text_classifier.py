@@ -64,9 +64,9 @@ class TextProcessing_Utils:
     def verify_cert_nat(self, text_cosine_sim, image_cosine_sim):
 
         if np.where(image_cosine_sim + text_cosine_sim > 1.7, 1, 0)[0][0] == 1:
-            return 1
+            return True
         else:
-            return 0 
+            return False
 
 
     def run_inference_on_csv(self, support_func, col_name, col_datatype='object', init_val=pd.NA, batch_size=20):
