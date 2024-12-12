@@ -7,7 +7,7 @@ import numpy as np
 from sentence_transformers import SentenceTransformer
 import pickle 
 from extract_utils.page_utils.load_image_classifier import Pretrained_Image_Classifier
-
+from misc_techniques.flair_extract import extract_country_years
 
 class TextProcessing_Utils:
     def __init__(self, csv_path, formatted_ocr_path):
@@ -122,8 +122,12 @@ class TextProcessing_Utils:
             self.output_csv.to_csv(self.csv_path, index=False)
             print(f"Text Inference completed. Total changes: {changes_count}")
 
+# nameholder function to carry the formatting
+def get_countries(text, row): 
+    return extract_country_years(text)['countries']
 
-
+def get_years(text, row):
+    return extract_country_years(text)['years']
 
 def detect_g325av5(text, row):
     ''' 
