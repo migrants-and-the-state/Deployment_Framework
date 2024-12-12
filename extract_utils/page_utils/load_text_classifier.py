@@ -124,10 +124,10 @@ class TextProcessing_Utils:
 
 # nameholder function to carry the formatting
 def get_countries(text, row): 
-    return extract_country_years(text)['countries']
+    return extract_country_years(text).get('countries', [])
 
 def get_years(text, row):
-    return extract_country_years(text)['years']
+    return extract_country_years(text).get('years', [])
 
 def detect_g325av5(text, row):
     ''' 
