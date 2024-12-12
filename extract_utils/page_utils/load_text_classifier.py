@@ -28,8 +28,12 @@ class TextProcessing_Utils:
         return vectors / np.maximum(norms, 1e-6)
 
 
-    def init_text_model(self):
-        self.text_model = SentenceTransformer('sentence-transformers/all-mpnet-base-v2')
+    def init_text_image_model(self, image_model_path, device = 'cuda', model_inf_map =  {0:'form',1:'letter',2:'photograph',3:'misc'}):
+        self.text_model = SentenceTransformer('sentence-transformers/all-mpnet-base-v2').to(device)
+        self.image_model = Pretrained_Image_Classifier(model_path = model_path, 
+                                          model_inf_map = model_inf_map,
+                                          csv_path = self.csv_path,
+                                          device=device)
 
 
     def load_template_embeddings(self, pkl_path="./Misc_Techniques/cert_nat_img_text.pkl"):
@@ -68,6 +72,13 @@ class TextProcessing_Utils:
         else:
             return False
 
+    def detect_cert_nat(self, text, row):
+        url = row['full_jpg']
+
+        image_cosine_sim = self.compute_cosine_similarity_scores_from_pkls([url], self.cert_nat_image, None, self.image_model, mode='image_model')
+        text_cosine_sim = self.compute_cosine_similarity_scores_from_pkls([text], self.cert_nat_text, None, self.text_model, mode='text_model')
+
+        return self.verify_cert_nat(text_cosine_sim, image_cosine_sim)
 
     def run_inference_on_csv(self, support_func, col_name, col_datatype='object', init_val=pd.NA, batch_size=20):
         changes_count = 0
@@ -109,6 +120,7 @@ class TextProcessing_Utils:
             self.output_csv[col_name] = self.output_csv[col_name].astype(col_datatype)
             self.output_csv.to_csv(self.csv_path, index=False)
             print(f"Text Inference completed. Total changes: {changes_count}")
+
 
 
 
