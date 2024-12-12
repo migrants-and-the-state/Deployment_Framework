@@ -7,7 +7,7 @@ import numpy as np
 from sentence_transformers import SentenceTransformer
 import pickle 
 from extract_utils.page_utils.load_image_classifier import Pretrained_Image_Classifier
-from misc_techniques.flair_extract import extract_country_years
+from extract_utils.page_utils.flair_extract import extract_country_years
 
 class TextProcessing_Utils:
     def __init__(self, csv_path, formatted_ocr_path):
