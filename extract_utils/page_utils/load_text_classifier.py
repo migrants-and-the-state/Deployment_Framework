@@ -32,7 +32,7 @@ class TextProcessing_Utils:
         self.text_model = SentenceTransformer('sentence-transformers/all-mpnet-base-v2')
 
 
-    def load_template_embeddings(self, pkl_path="./Misc_techniques/cert_nat_img_text.pkl"):
+    def load_template_embeddings(self, pkl_path="./Misc_Techniques/cert_nat_img_text.pkl"):
         ''' 
         Loads Pkl file containing template image and text embedding of certificate of naturalization
         '''
