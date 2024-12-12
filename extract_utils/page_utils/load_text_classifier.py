@@ -6,7 +6,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
 from sentence_transformers import SentenceTransformer
 import pickle 
-from load_image_classifier import Pretrained_Image_Classifier
+from extract_utils.page_utils.load_image_classifier import Pretrained_Image_Classifier
 
 
 class TextProcessing_Utils:
