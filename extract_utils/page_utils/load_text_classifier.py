@@ -39,7 +39,7 @@ class TextProcessing_Utils:
         self.cert_nat_image, self.cert_nat_text = self.load_pickle_file(pkl_path)
 
 
-    def compute_cosine_similarity_scores_from_pkls(self, text_list, template_vector, vectors=None, model=None, mode='text_model'):
+    def compute_cosine_similarity_scores_from_pkls(self, input, template_vector, vectors=None, model=None, mode='text_model'):
         ''' 
         Computes Cosine Similarity 
         TODO: Add more info to aid debugging
@@ -47,13 +47,13 @@ class TextProcessing_Utils:
         
         if model is not None:
             if mode == "text_model":
-                # assume text_list contains text
-                embeddings = model.encode(text_list)
+                # assume input contains text
+                embeddings = model.encode(input)
                 embeddings_array = np.array(embeddings)
 
             elif  mode == 'image_model':
-                # assume text_list contains urls
-                output, features = model.inference(text_list)
+                # assume input contains urls
+                output, features = model.inference(input[0])
                 embeddings_array = np.array(features)
             
             specific_doc_vector_array = np.array(template_vector).reshape(1, -1)
@@ -61,7 +61,7 @@ class TextProcessing_Utils:
 
         return similarity_scores
 
-    def verify_cert_nat(text_cosine_sim, image_cosine_sim):
+    def verify_cert_nat(self, text_cosine_sim, image_cosine_sim):
 
         if np.where(image_cosine_sim + text_cosine_sim > 1.7, 1, 0)[0][0] == 1:
             return 1
