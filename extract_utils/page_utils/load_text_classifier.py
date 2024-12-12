@@ -2,6 +2,12 @@
 import pandas as pd
 from tqdm import tqdm
 import os 
+from sklearn.metrics.pairwise import cosine_similarity
+import numpy as np
+from sentence_transformers import SentenceTransformer
+import pickle 
+
+
 class TextProcessing_Utils:
     def __init__(self, csv_path, formatted_ocr_path):
         
@@ -9,9 +15,59 @@ class TextProcessing_Utils:
         self.output_csv = pd.read_csv(self.csv_path)
         self.formatted_ocr_path = formatted_ocr_path
 
-    def load_text_model(self):
-        pass
-    
+    def load_pickle_file(self, file_path):
+        ''' 
+        Load up a pickle file
+        '''
+        with open(file_path, 'rb') as file:
+            data = pickle.load(file)
+        return data
+
+    def normalize_vectors(self, vectors):
+        norms = np.linalg.norm(vectors, axis=1, keepdims=True)
+        return vectors / np.maximum(norms, 1e-6)
+
+
+    def init_text_model(self):
+        self.text_model = SentenceTransformer('sentence-transformers/all-mpnet-base-v2')
+
+
+    def load_template_embeddings(self, pkl_path="./Misc_techniques/cert_nat_img_text.pkl"):
+        ''' 
+        Loads Pkl file containing template image and text embedding of certificate of naturalization
+        '''
+        self.cert_nat_image, self.cert_nat_text = self.load_pickle_file(pkl_path)
+
+
+    def compute_cosine_similarity_scores_from_pkls(self, text_list, template_vector, vectors=None, model=None, mode='text_model'):
+        ''' 
+        Computes Cosine Similarity 
+        TODO: Add more info to aid debugging
+        '''
+        
+        if model is not None:
+            if mode == "text_model":
+                # assume text_list contains text
+                embeddings = model.encode(text_list)
+                embeddings_array = np.array(embeddings)
+
+            elif  mode == 'image_model':
+                # assume text_list contains urls
+                output, features = model.inference(text_list)
+                embeddings_array = np.array(features)
+            
+            specific_doc_vector_array = np.array(template_vector).reshape(1, -1)
+            similarity_scores = cosine_similarity(specific_doc_vector_array, embeddings_array)
+
+        return similarity_scores
+
+    def verify_cert_nat(text_cosine_sim, image_cosine_sim):
+
+        if np.where(image_cosine_sim + text_cosine_sim > 1.7, 1, 0)[0][0] == 1:
+            return 1
+        else:
+            return 0 
+
 
     def run_inference_on_csv(self, support_func, col_name, col_datatype='object', init_val=pd.NA, batch_size=20):
         changes_count = 0
@@ -74,14 +130,3 @@ def detect_g325av5(text, row):
         else:
             return False
     return False
-
-# def detect_cert_nat():
-
-#     image_model = Pretrained_Image_Classifier("linear_layer.pth",device='cpu')
-#     text_model = detect_cert_nat.init_text_model()
-
-
-#     image_cosine_sim = detect_cert_nat.compute_cosine_similarity_scores_from_pkls([url], cert_nat_image, None, image_model, mode='image_model')
-#     text_cosine_sim = detect_cert_nat.compute_cosine_similarity_scores_from_pkls([piece_of_text], cert_nat_text, None, text_model, mode='text_model')
-
-#     detect_cert_nat.verify_cert_nat(text_cosine_sim, image_cosine_sim)
