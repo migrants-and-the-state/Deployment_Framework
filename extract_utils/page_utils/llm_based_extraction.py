@@ -102,7 +102,7 @@ class VLLM_Extractor:
 # To be merged with vllm extractor in the future
 class Qwen_Extractor:
 
-    def __init__(self, csv_path):
+    def __init__(self, csv_path,formatted_ocr_path):
 
         self.model = Qwen2VLForConditionalGeneration.from_pretrained(
             "Qwen/Qwen2-VL-2B-Instruct", torch_dtype="auto", device_map='auto'
@@ -112,11 +112,15 @@ class Qwen_Extractor:
         print(":::: LOADED MODEL SUCCESSFULLY")
 
         self.csv_path = csv_path
+        self.formatted_ocr_path = formatted_ocr_path
         self.output_csv = pd.read_csv(self.csv_path)
 
 
     def inference_llm_certnat_complexion(self, url, text_postprocess_fn=None):
-
+        """ 
+        Extract Complexion with an LLM.
+        Instead can also obtain it from the OCR straight.
+        """
         
         # Retrieve the image from the URL
         try:
