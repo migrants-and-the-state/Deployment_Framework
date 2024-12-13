@@ -116,7 +116,7 @@ class Qwen_Extractor:
         self.output_csv = pd.read_csv(self.csv_path)
 
 
-    def inference_llm_certnat_complexion(self, url, text_postprocess_fn=None):
+    def inference_llm_certnat_complexion(self, url, prompt, text_postprocess_fn=None):
         """ 
         Extract Complexion with an LLM.
         Instead can also obtain it from the OCR straight.
