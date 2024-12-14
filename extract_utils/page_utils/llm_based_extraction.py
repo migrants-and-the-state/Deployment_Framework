@@ -241,7 +241,7 @@ class Qwen_Extractor:
             print(f"Image Model Inference completed. Total changes: {changes_count}")
 
 
-    def inference_llm_certnat_complexion(self, url, prompt, text_postprocess_fn=None):
+    def inference_llm_certnat(self, url, prompt, text_postprocess_fn=None):
         """ 
         Extract Complexion with an LLM.
         Instead can also obtain it from the OCR straight.
@@ -262,7 +262,7 @@ class Qwen_Extractor:
                             "type": "image",
                             "image": f"{url}",
                         },
-                        {"type": "text", "text": "Extract ONLY the marital status from the image text. Return N.A if not present."},
+                        {"type": "text", "text": f"{prompt}"},
                     ],
                 }
                 
@@ -320,7 +320,7 @@ class Qwen_Extractor:
             image_url = row['full_jpg']
             try:
                 
-                output = self.inference_llm_certnat_complexion(image_url, prompt, text_postprocess_fn)
+                output = self.inference_llm_certnat(image_url, prompt, text_postprocess_fn)
                 
                 if output is not None:
 
