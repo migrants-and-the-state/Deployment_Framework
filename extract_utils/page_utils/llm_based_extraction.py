@@ -302,7 +302,7 @@ class Qwen_Extractor:
 
         return answer 
 
-    def run_inference_on_csv_marital(self, prompt, text_postprocess_fn, col_name,col_datatype='object', init_val=None, batch_size=20):
+    def run_inference_on_csv(self, prompt, text_postprocess_fn, col_name,col_datatype='object', init_val=None, batch_size=20):
         ''' 
         very general script to run vllm inference for a given prompt and store the results into a csv on a particular column
 
