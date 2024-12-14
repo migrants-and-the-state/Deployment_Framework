@@ -286,7 +286,7 @@ class Qwen_Extractor:
             generated_ids_trimmed = [
                 out_ids[len(in_ids) :] for in_ids, out_ids in zip(inputs.input_ids, generated_ids)
             ]
-            output_text = self.processor.batch_decode(
+            answer = self.processor.batch_decode(
                 generated_ids_trimmed, skip_special_tokens=True, clean_up_tokenization_spaces=False
             )[0]
                     
@@ -298,7 +298,7 @@ class Qwen_Extractor:
 
         if text_postprocess_fn:
             # Process the answer to standardize format
-            answer = text_postprocess_fn(output_text)
+            answer = text_postprocess_fn(answer)
 
         return answer 
 
