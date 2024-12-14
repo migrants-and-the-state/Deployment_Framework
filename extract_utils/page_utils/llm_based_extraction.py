@@ -297,7 +297,7 @@ class Qwen_Extractor:
 
 
         if text_postprocess_fn:
-            # Process the answer to standardize gender format
+            # Process the answer to standardize format
             answer = text_postprocess_fn(output_text)
 
         return answer 
