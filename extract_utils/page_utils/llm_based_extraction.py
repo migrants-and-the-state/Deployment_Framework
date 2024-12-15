@@ -584,16 +584,18 @@ class Qwen_Extractor:
 
 # all post procssing functions go here
 def process_checkbox(text):
-    
-    if 'unchecked' not in text and 'checked' in text:
-        # Extract all quoted words (single or double quotes)
-        quoted_words = re.findall(r'"(.*?)"|\'(.*?)\'', text)
-        # Flatten and remove empty strings from tuples
-        quoted_words = [item for sublist in quoted_words for item in sublist if item]
-        # Return the last quoted word (assumed to be the marked checkbox value)
-        return quoted_words[-1] if quoted_words else "None"
-    else:
-        return "None"
+    try:
+        if 'unchecked' not in text and 'checked' in text:
+            # Extract all quoted words (single or double quotes)
+            quoted_words = re.findall(r'"(.*?)"|\'(.*?)\'', text)
+            # Flatten and remove empty strings from tuples
+            quoted_words = [item for sublist in quoted_words for item in sublist if item]
+            # Return the last quoted word (assumed to be the marked checkbox value)
+            return quoted_words[-1] if quoted_words else "None"
+        else:
+            return "None"
+    except Exception as e:
+        return "none"
 def process_occupation(text):
     text = text.lower().split(',')
     if len(text) == 2 and text[-1] == 'retired':
