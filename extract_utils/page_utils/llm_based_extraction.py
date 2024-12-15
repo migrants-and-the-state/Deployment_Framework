@@ -583,7 +583,70 @@ class Qwen_Extractor:
             self.output_csv.to_csv(self.csv_path, index=False).astype(col_datatype)
             print(f"Image Model Inference completed. Total changes: {changes_count}")
 
+## NATIONALITY
+    def run_inference_on_csv_nationality(self, prompt, text_postprocess_fn, col_name,col_datatype='object', init_val=None, batch_size=20):
+        ''' 
+        very general script to run vllm inference for a given prompt and store the results into a csv on a particular column
+
+        '''
+
+
+        changes_count = 0
+        if col_name not in self.output_csv.columns:
+            self.output_csv[col_name] = init_val 
+
+        for index, row in tqdm(self.output_csv.iterrows()):
+            if row[col_name] != init_val or row['is_cert_naturalization'] is False: 
+                continue
+            
+            image_url = row['full_jpg']
+            image_url = transform_url_nationality(image_url)
+            try:
+                
+                output = self.inference_llm_certnat(image_url, prompt, text_postprocess_fn)
+                
+                if output is not None:
+
+                    self.output_csv.at[index, col_name] = output
+                    changes_count += 1
+
+                    if changes_count % batch_size == 0:
+                        self.output_csv.to_csv(self.csv_path, index=False).astype(col_datatype)
+                        # print(f"Saved batch of {batch_size} changes")
+                else:
+                    print(f"Failed to process row {index}")
+
+            except Exception as e:
+                print(f"Error processing row {index}: {str(e)}")
+                continue
+
+        if changes_count > 0:
+            self.output_csv.to_csv(self.csv_path, index=False).astype(col_datatype)
+            print(f"Image Model Inference completed. Total changes: {changes_count}")
+
+
 # all post procssing functions go here
+def process_nationality(text):
+    has_alpha = any(char.isalpha() for char in text)
+    has_digit = any(char.isdigit() for char in text)
+    if (has_alpha and has_digit) or 'nation' in text.lower():
+        return 'N.A'
+    return text 
+
+def transform_url_nationality(url):
+    # Split the URL into parts
+    parts = url.split("/")
+
+    # Check if the 'full' parameter is present
+    if "full" in parts:
+        # Find the index of 'full' and replace it with the cropping parameter
+        full_index = parts.index("full")
+        parts[full_index] = "pct:50,0,50,30"
+
+    # Rejoin the parts to form the new URL
+    transformed_url = "/".join(parts)
+    return transformed_url
+
 def transform_url(url):
     # Split the URL into parts
     parts = url.split("/")
