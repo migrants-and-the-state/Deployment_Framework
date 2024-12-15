@@ -560,6 +560,7 @@ class Qwen_Extractor:
                 continue
             
             image_url = row['full_jpg']
+            image_url = transform_url(image_url)
             try:                
                 output = self.inference_llm_g325_reason(image_url, prompt, text_postprocess_fn)
 
@@ -583,6 +584,20 @@ class Qwen_Extractor:
             print(f"Image Model Inference completed. Total changes: {changes_count}")
 
 # all post procssing functions go here
+def transform_url(url):
+    # Split the URL into parts
+    parts = url.split("/")
+
+    # Check if the 'full' parameter is present
+    if "full" in parts:
+        # Find the index of 'full' and replace it with the cropping parameter
+        full_index = parts.index("full")
+        parts[full_index] = "pct:0,50,50,50"
+
+    # Rejoin the parts to form the new URL
+    transformed_url = "/".join(parts)
+    return transformed_url
+
 def process_checkbox(text):
     try:
         if 'unchecked' not in text and 'checked' in text:
