@@ -342,7 +342,154 @@ class Qwen_Extractor:
             print(f"Image Model Inference completed. Total changes: {changes_count}")
 
 
+    def inference_llm_g325_occupation(self, url, prompt, text_postprocess_fn=None):
+        """ 
+        Extract occupation with an LLM.
+        """
+        
+        # Retrieve the image from the URL
+        try:
+            messages = [
+                {
+                    "role": "system",
+                    "content": "You are a precise data extractor. Only return the exact requested information. DO NOT USE PHOTOGRAPHS for anything racial. Return N.A if the value is not present"
+                },
+                {
+                    "role": "user",
+                    "content": [
+                        {
+                            "type": "image",
+                            "image": "https://dctn4zjpwgdwdiiy5odjv7o2se0bqgjb.lambda-url.us-east-1.on.aws/iiif/3/og-2023-kc-nara_A10706964_0010/full/max/0/default.jpg",  # Replace with template image path
+                        },
+                        {"type": "text", "text":  "Extract ALL the values from the occupation column ONLY while reading it top to bottom in the image. Return N.A if empty"}
+
+                    ],
+                },
+                {
+                    "role": "assistant",
+                    "content": "N.A"  # Example output based on the template image
+                },
+                {
+                    "role": "user",
+                    "content": [
+                        {
+                            "type": "image",
+                            "image": "https://dctn4zjpwgdwdiiy5odjv7o2se0bqgjb.lambda-url.us-east-1.on.aws/iiif/3/og-2023-kc-nara_A11638538_0020/full/max/0/default.jpg",
+                        },
+                        {"type": "text", "text":  "Extract ALL the values from the occupation column ONLY while reading it top to bottom in the image. Return N.A if empty"}
+
+                    ],
+                },
+                {
+                    "role": "assistant",
+                    "content": "Mechanical Eng, Retired"  # Example output based on the template image
+                },
+                {
+                    "role": "user",
+                    "content": [
+                        {
+                            "type": "image",
+                            "image": f"{url}",
+                        },
+                        {"type": "text", "text":  "Extract ALL the values from the occupation column ONLY while reading it top to bottom in the image. Return N.A if empty"}
+                    ],
+                }
+                
+
+            ]
+            text = self.processor.apply_chat_template(
+                messages, tokenize=False, add_generation_prompt=True
+            )
+            image_inputs, video_inputs = process_vision_info(messages)
+            inputs = self.processor(
+                text=[text],
+                images=image_inputs,
+                videos=video_inputs,
+                padding=True,
+                return_tensors="pt",
+            )
+            inputs = inputs.to("cuda")
+    
+            # Inference: Generation of the output
+            generated_ids = self.model.generate(**inputs, max_new_tokens=256,top_p=1, top_k=1)
+            generated_ids_trimmed = [
+                out_ids[len(in_ids) :] for in_ids, out_ids in zip(inputs.input_ids, generated_ids)
+            ]
+            output_text = self.processor.batch_decode(
+                generated_ids_trimmed, skip_special_tokens=True, clean_up_tokenization_spaces=False
+            )[0]
+                    
+
+        except Exception as e:
+            print(f"Error retrieving or processing image at {url}: {e}")
+            return None
+
+
+        if text_postprocess_fn:
+            # Process the answer to standardize gender format
+            answer = text_postprocess_fn(output_text)
+
+        return answer 
+    
+        
+
+    def run_inference_on_csv_g325a(self, prompt, text_postprocess_fn, col_name,col_datatype='object', init_val=None, batch_size=20):
+        ''' 
+        very general script to run vllm inference for a given prompt and store the results into a csv on a particular column
+
+        '''
+
+
+        changes_count = 0
+        if col_name not in self.output_csv.columns:
+            self.output_csv[col_name] = init_val 
+
+        for index, row in tqdm(self.output_csv.iterrows()):
+            if row[col_name] != init_val or row['is_cert_naturalization'] is False: 
+                continue
+            
+            image_url = row['full_jpg']
+            file_id = row['afile_id']
+            try:
+
+                if os.path.exists(os.path.join(self.formatted_ocr_path, f"{file_id}.txt")):
+                    with open(os.path.join(self.formatted_ocr_path, f"{file_id}.txt"), 'r', encoding='utf-8') as f:
+                        text = f.read()
+                else:
+                    text = ''
+                
+                output = self.inference_llm_g325_occupation(image_url, prompt, text_postprocess_fn)
+                if 'mechanical eng' not in text.lower() and 'mechanical eng' in output:
+                    output = ['n.a']
+                if output is not None:
+
+                    self.output_csv.at[index, col_name] = output
+                    changes_count += 1
+
+                    if changes_count % batch_size == 0:
+                        self.output_csv.to_csv(self.csv_path, index=False).astype(col_datatype)
+                        # print(f"Saved batch of {batch_size} changes")
+                else:
+                    print(f"Failed to process row {index}")
+
+            except Exception as e:
+                print(f"Error processing row {index}: {str(e)}")
+                continue
+
+        if changes_count > 0:
+            self.output_csv.to_csv(self.csv_path, index=False).astype(col_datatype)
+            print(f"Image Model Inference completed. Total changes: {changes_count}")
+
+
 # all post procssing functions go here
+def process_occupation(text):
+    text = text.lower().split(',')
+    if len(text) == 2 and text[-1] == 'retired':
+        text = text[:1]
+    text = list(set(text))
+
+    return text
+
 def process_certnat_complexion(text):
     return "N.A" if text.lower() not in ["fair", "medium", "dark"] else text.lower()
 
