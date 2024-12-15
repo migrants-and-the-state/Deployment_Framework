@@ -445,7 +445,7 @@ class Qwen_Extractor:
             self.output_csv[col_name] = init_val 
 
         for index, row in tqdm(self.output_csv.iterrows()):
-            if row[col_name] != init_val or row['is_cert_naturalization'] is False: 
+            if row[col_name] != init_val or row['is_g325a'] is False: 
                 continue
             
             image_url = row['full_jpg']
