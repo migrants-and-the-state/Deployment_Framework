@@ -52,7 +52,7 @@ class AfileUtils:
             max_count = counts.max()
             max_values = counts[counts == max_count].index.tolist()
 
-            # Prioritize 'male' or 'female' if they are in max_values
+            # If both 'male' and 'female' appear in the max count, return None
             if 'male' in max_values and 'female' in max_values:
                 return None
             if 'male' in max_values:
@@ -63,7 +63,8 @@ class AfileUtils:
             # If no 'male' or 'female' prioritization, return any one of the max_values
             return max_values[0]  # Arbitrary choice
 
-        gender_counts = self.afile_csv.groupby('id')['ms_sex_llm_v1'].apply(determine_gender)
+# Apply the function on the full grouped DataFrame
+        gender_counts = self.afile_csv.groupby('id').apply(determine_gender)
         processed_data['sex'] = processed_data['id'].map(gender_counts)
 
         # 4. 'page_count' column
