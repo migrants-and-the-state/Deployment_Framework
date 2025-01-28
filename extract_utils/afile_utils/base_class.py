@@ -39,11 +39,20 @@ class AfileUtils:
         # 3. 'sex' column - prioritizing male/female, else None
         def determine_gender(group):
             counts = group.value_counts()
-            if 'male' in counts:
+            if counts.empty:
+                return None
+            
+            max_count = counts.max()
+            max_values = counts[counts == max_count].index.tolist()
+
+            # Prioritize 'male' or 'female' if they are in max_values
+            if 'male' in max_values:
                 return 'male'
-            if 'female' in counts:
+            if 'female' in max_values:
                 return 'female'
-            return counts.idxmax() if not counts.empty else None
+
+            # If no 'male' or 'female' prioritization, return any one of the max_values
+            return max_values[0]
 
         gender_counts = self.afile_csv.groupby('id')['ms_sex_llm_v1'].apply(determine_gender)
         processed_data['sex'] = processed_data['id'].map(gender_counts)
