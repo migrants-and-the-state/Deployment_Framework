@@ -61,6 +61,6 @@ class AfileUtils:
         page_count = self.afile_csv.groupby('id')['full_jpg'].apply(len)
         processed_data['page_count'] = processed_data['id'].map(page_count)
 
-        processed_data.to_csv(self.output_path)
+        processed_data.to_csv(self.output_path, index=False)
         print(f"Output successfully stored in {self.output_path}")
 
