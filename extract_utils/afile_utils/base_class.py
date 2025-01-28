@@ -38,7 +38,14 @@ class AfileUtils:
 
         # 3. 'sex' column - prioritizing male/female, else None
         def determine_gender(group):
-            counts = group.value_counts()
+            # Filter the group to include only rows where ms_doctype_v1 is 'form' or 'letter'
+            filtered_group = group[group['ms_doctype_v1'].isin(['form', 'letter'])]
+            
+            if filtered_group.empty:
+                return None
+
+            counts = filtered_group['ms_sex_llm_v1'].value_counts()
+            
             if counts.empty:
                 return None
             
@@ -47,14 +54,14 @@ class AfileUtils:
 
             # Prioritize 'male' or 'female' if they are in max_values
             if 'male' in max_values and 'female' in max_values:
-                return 'male,female'
+                return None
             if 'male' in max_values:
                 return 'male'
             if 'female' in max_values:
                 return 'female'
 
             # If no 'male' or 'female' prioritization, return any one of the max_values
-            return max_values[0]
+            return max_values[0]  # Arbitrary choice
 
         gender_counts = self.afile_csv.groupby('id')['ms_sex_llm_v1'].apply(determine_gender)
         processed_data['sex'] = processed_data['id'].map(gender_counts)
