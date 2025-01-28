@@ -46,6 +46,8 @@ class AfileUtils:
             max_values = counts[counts == max_count].index.tolist()
 
             # Prioritize 'male' or 'female' if they are in max_values
+            if 'male' in max_values and 'female' in max_values:
+                return 'male,female'
             if 'male' in max_values:
                 return 'male'
             if 'female' in max_values:
